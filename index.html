@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hidden Sugar in Starbucks Drinks</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/d3-annotation@2.5.1/dist/d3-annotation.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>The Hidden Sugar in Starbucks Drinks</h1>
+    <p class="subtitle">Discover how sugar and calorie content vary across your favorite beverages</p>
+  </header>
+
+  <div id="chart-container">
+    <svg id="viz" width="960" height="600"></svg>
+  </div>
+
+  <div id="controls">
+    <button onclick="showScene(0)" id="btn-0" class="active">Scene 1: Category Overview</button>
+    <button onclick="showScene(1)" id="btn-1">Scene 2: Sugar Bombs</button>
+    <button onclick="showScene(2)" id="btn-2">Scene 3: Explore</button>
+  </div>
+
+  <div id="narrative-text">
+    <p id="scene-description">Click through the scenes above to explore the hidden sugar content in Starbucks drinks.</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html> 

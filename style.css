@@ -1,0 +1,165 @@
+/* Starbucks-themed styling */
+body {
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  background-color: #f7f5f3;
+  color: #1e3932;
+  margin: 0;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+header {
+  margin-bottom: 30px;
+}
+
+h1 {
+  color: #00704a;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.subtitle {
+  color: #6f6f6f;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+#chart-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 1000px;
+}
+
+#controls {
+  margin: 30px 0;
+}
+
+button {
+  margin: 5px 10px;
+  padding: 12px 24px;
+  background-color: #00704a;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button:hover {
+  background-color: #004d32;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+button.active {
+  background-color: #d4af37;
+  color: #1e3932;
+}
+
+button.active:hover {
+  background-color: #c19b26;
+}
+
+#narrative-text {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#scene-description {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0;
+}
+
+svg {
+  margin-top: 10px;
+  background: white;
+  border-radius: 5px;
+}
+
+/* Tooltip styling */
+.tooltip {
+  position: absolute;
+  text-align: center;
+  width: auto;
+  height: auto;
+  padding: 8px;
+  font: 12px Arial;
+  background: #1e3932;
+  color: white;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Chart text styling */
+.chart-title {
+  font-size: 18px;
+  font-weight: bold;
+  fill: #1e3932;
+}
+
+.axis-label {
+  font-size: 14px;
+  fill: #666;
+}
+
+.bar-label {
+  font-size: 12px;
+  fill: #333;
+}
+
+.annotation-group .annotation-note-title {
+  font-weight: bold;
+  fill: #1e3932;
+}
+.annotation-group .annotation-note-label {
+  fill: #333;
+  font-size: 12px;
+}
+.annotation-group path {
+  stroke: #00704a;
+  stroke-width: 1.5px;
+}
+.annotation-group circle {
+  fill: #00704a;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  #chart-container {
+    padding: 15px;
+    margin: 15px;
+  }
+  
+  svg {
+    width: 100%;
+    height: auto;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 13px;
+    margin: 5px;
+  }
+} 
