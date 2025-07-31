@@ -141,6 +141,20 @@ svg {
   fill: #00704a;
 }
 
+#extras {
+  margin: 20px auto;
+  max-width: 800px;
+  color: #1e3932;
+  font-size: 14px;
+}
+#extras input[type="range"] {
+  width: 200px;
+  margin-left: 10px;
+}
+#extras label {
+  font-weight: bold;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   h1 {

@@ -4,10 +4,40 @@ let svg, width, height, margin;
 
 // Scene descriptions for the narrative
 const sceneDescriptions = [
-  "Some Starbucks drink categories contain significantly more sugar than others. Frappuccinos and specialty drinks often pack the most sugar per serving.",
-  "These are the sugar bombs hiding in plain sight! Some popular drinks contain as much sugar as a can of soda or more.",
-  "Explore the relationship between calories and sugar across all Starbucks drinks. Hover over each point to see details."
+  "Starbucks offers something for everyone—but some categories hide a LOT of sugar. Let’s start with a birds-eye view.",
+  "Here are the worst offenders. How much sugar is lurking in your favorite drink?",
+  "Now it’s your turn: filter and explore every drink to find healthier (or less healthy) options."
 ];
+
+// Helper: map sugar level to color (traffic-light style)
+function sugarColor(value) {
+  if (value >= 50) return "#c42e3c";      // red – very high sugar
+  if (value >= 30) return "#f4c430";      // orange – moderate sugar
+  return "#00704a";                       // green – lower sugar
+}
+
+// Build / clear extra UI elements
+function buildExtras(index, maxSugar) {
+  const extras = d3.select("#extras").html("");
+  if (index !== 2) return; // only needed for scene 3
+
+  extras.append("label")
+    .attr("for", "sugarSlider")
+    .text("Minimum sugar (g):");
+
+  extras.append("input")
+    .attr("type", "range")
+    .attr("id", "sugarSlider")
+    .attr("min", 0)
+    .attr("max", maxSugar)
+    .attr("step", 5)
+    .attr("value", 0);
+
+  extras.append("span")
+    .attr("id", "sliderVal")
+    .style("font-weight", "bold")
+    .text(" 0g");
+}
 
 // Initialize the visualization
 document.addEventListener('DOMContentLoaded', function() {
@@ -62,6 +92,10 @@ function showScene(index) {
   
   // Clear previous chart
   svg.selectAll("*").remove();
+  
+  // Build dynamic extras (slider etc.)
+  const maxSugar = d3.max(data, d => d.sugar);
+  buildExtras(index, maxSugar);
   
   // Update narrative text
   updateNarrativeText(sceneDescriptions[index]);
@@ -150,7 +184,7 @@ function drawCategoryOverview() {
     .attr("y", chartArea.height)
     .attr("width", x.bandwidth())
     .attr("height", 0)
-    .attr("fill", d => colorScale(d.avgSugar))
+    .attr("fill", d => sugarColor(d.avgSugar))
     .attr("stroke", "#333")
     .attr("stroke-width", 1)
     .transition()
@@ -260,7 +294,7 @@ function drawSugarBombs() {
     .attr("y", d => y(`${d.beverage} (${d.prep})`))
     .attr("width", 0)
     .attr("height", y.bandwidth())
-    .attr("fill", d => colorScale(d.sugar))
+    .attr("fill", d => sugarColor(d.sugar))
     .attr("stroke", "#333")
     .attr("stroke-width", 1)
     .transition()
@@ -364,7 +398,7 @@ function drawInteractiveExplore() {
     .attr("cx", d => x(d.calories))
     .attr("cy", d => y(d.sugar))
     .attr("r", 0)
-    .attr("fill", d => colorScale(d.cleanCategory))
+    .attr("fill", d => sugarColor(d.sugar))
     .attr("stroke", "#333")
     .attr("stroke-width", 0.5)
     .attr("opacity", 0.7)
@@ -432,27 +466,50 @@ function drawInteractiveExplore() {
   // Add legend
   const legend = svg.append("g")
     .attr("class", "legend")
-    .attr("transform", `translate(${width - 150}, 60)`);
-    
+    .attr("transform", `translate(${width - 160}, 60)`);
+
+  const sugarLevels = [
+    {label: "< 30g (Lower)", color: sugarColor(20)},
+    {label: "30–49g (Moderate)", color: sugarColor(40)},
+    {label: "≥ 50g (High)", color: sugarColor(60)}
+  ];
+
   const legendItems = legend.selectAll(".legend-item")
-    .data(categories.slice(0, 6)) // Show first 6 categories
+    .data(sugarLevels)
     .enter()
     .append("g")
     .attr("class", "legend-item")
     .attr("transform", (d, i) => `translate(0, ${i * 20})`);
-    
-  legendItems.append("circle")
-    .attr("cx", 0)
-    .attr("cy", 0)
-    .attr("r", 5)
-    .attr("fill", d => colorScale(d));
-    
+
+  legendItems.append("rect")
+    .attr("x", 0)
+    .attr("y", -5)
+    .attr("width", 12)
+    .attr("height", 12)
+    .attr("fill", d => d.color);
+
   legendItems.append("text")
-    .attr("x", 12)
+    .attr("x", 18)
     .attr("y", 0)
     .attr("dy", "0.35em")
     .style("font-size", "12px")
-    .text(d => d.length > 15 ? d.substring(0, 15) + "..." : d);
+    .text(d => d.label);
+
+  // Slider interaction to filter by minimum sugar
+  const slider = d3.select("#sugarSlider");
+  if (!slider.empty()) {
+    const updateScatter = (minSugar) => {
+      d3.select("#sliderVal").text(` ${minSugar}g`);
+      g.selectAll("circle")
+        .attr("opacity", d => d.sugar >= minSugar ? 0.8 : 0.05)
+        .attr("r", d => d.sugar >= minSugar ? 4 : 2);
+    };
+    slider.on("input", function() {
+      updateScatter(+this.value);
+    });
+    // Initialize with current slider value
+    updateScatter(+slider.property("value"));
+  }
 
   // Identify drink with max sugar (could coincide with highest sugar bomb) to annotate
   const maxSugary = data.reduce((a, b) => (a.sugar > b.sugar ? a : b));
