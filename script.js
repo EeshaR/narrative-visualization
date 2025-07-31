@@ -56,8 +56,8 @@ function initializeChart() {
     .attr("class", "tooltip");
 }
 
-// Load and process data
-function loadData() {
+// Load and process data with retry logic
+function loadData(retryCount = 0) {
   d3.csv("data.csv").then(function(csv) {
     data = csv.map(d => ({
       beverage: d.Beverage,
@@ -70,10 +70,16 @@ function loadData() {
     })).filter(d => d.calories > 0 && d.sugar >= 0); // Filter out invalid data
     
     console.log("Data loaded:", data.length, "items");
-    showScene(0);
+    // Show the current scene or default to scene 0
+    showScene(currentScene);
   }).catch(error => {
     console.error("Error loading data:", error);
-    updateNarrativeText("Error loading data. Please check that data.csv is available.");
+    if (retryCount < 3) {
+      console.log(`Retrying data load... attempt ${retryCount + 1}`);
+      setTimeout(() => loadData(retryCount + 1), 1000);
+    } else {
+      updateNarrativeText("Error loading data. Please check that data.csv is available and that you're running this on a web server.");
+    }
   });
 }
 
@@ -81,6 +87,9 @@ function loadData() {
 function showScene(index) {
   if (!data) {
     console.log("Data not loaded yet");
+    updateNarrativeText("Loading data, please wait...");
+    // Try to load data again if user clicks a scene button
+    loadData();
     return;
   }
   
